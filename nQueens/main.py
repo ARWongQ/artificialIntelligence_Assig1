@@ -14,6 +14,10 @@ def main():
     gameBoard.setRandomQueens()
     gameBoard.printBoard()
 
+    hitting = gameBoard.checkTotalHittingQueens()
+
+    print("These many queens are hitting each other")
+    print(hitting)
 
 
 

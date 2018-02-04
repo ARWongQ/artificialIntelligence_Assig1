@@ -5,5 +5,6 @@ class Node:
         self.g = 0
         self.f = 0
         self.queen = False
+        self.hitting = 0
 
 
