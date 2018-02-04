@@ -11,6 +11,14 @@ class Board:
         self.previous = None
 
 
+    def addTotalHittingQueens(self):
+        totalAttacks = 0
+        for i in xrange(self.dimensions):
+                for j in xrange(self.dimensions):
+                    if(self.grid[i][j].queen == True):
+                        totalAttacks += self.grid[i][j].hitting
+
+        return totalAttacks
 
     #Calculates the hitting Queens of the board
     def checkTotalHittingQueens(self):
@@ -21,20 +29,62 @@ class Board:
                     if(self.grid[i][j].queen == True):
                         self.checkHittingQueens(i,j)
 
+        totalAttacks = self.addTotalHittingQueens()
+
+        return (totalAttacks/2)
+
 
     #Check Horizontal
+    def checkHorizontalAttacks(self,i,j):
+        for j_t in xrange(self.dimensions):
+            if(self.grid[i][j_t].queen == True and j_t != j):
+                self.grid[i][j].hitting += 1
 
-    #Check Up_Down
+
+    #Check Vertical
+    def checkVerticalAttacks(self,i,j):
+        for i_t in xrange(self.dimensions):
+            if(self.grid[i_t][j].queen == True and i_t != i):
+                self.grid[i][j].hitting += 1
 
     #Diagonal /
+    def checkDiagonalFAttacks(self,i,j):
+        currI = i
+        currJ = j
+        while(currI != 0 and currJ != (self.dimensions-1)):
+            currI -= 1
+            currJ += 1
+
+        for i_t in xrange(self.dimensions):
+            newI = currI+i_t
+            newJ = currJ-i_t
+            if(newI < self.dimensions and newJ >= 0):
+                if(self.grid[newI][newJ].queen == True and (newI != i and newJ != j)):
+                    self.grid[i][j].hitting += 1
+
 
     #Diagonal \
+    def checkDiagonalBAttacks(self,i,j):
+        currI = i
+        currJ = j
+        while(currI != 0 and currJ != 0):
+            currI -= 1
+            currJ -= 1
+
+        for i_t in xrange(self.dimensions):
+            newI = currI+i_t
+            newJ = currJ+i_t
+            if(newI < self.dimensions and newJ < self.dimensions):
+                if(self.grid[newI][newJ].queen == True and (newI != i and newJ != j) ):
+                    self.grid[i][j].hitting += 1
 
 
     #Check how many queens this queen is hitting
     def checkHittingQueens(self,i,j):
-        print("XXX")
-
+        self.checkHorizontalAttacks(i,j)
+        self.checkVerticalAttacks(i,j)
+        self.checkDiagonalBAttacks(i,j)
+        self.checkDiagonalFAttacks(i,j)
 
     #Clears the Queens in a board
     def clearQueens(self):
