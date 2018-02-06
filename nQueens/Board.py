@@ -11,6 +11,7 @@ class Board:
         self.previous = None
 
 
+    #Sums all the queens that are attacking
     def addTotalHittingQueens(self):
         totalAttacks = 0
         for i in xrange(self.dimensions):
@@ -20,41 +21,49 @@ class Board:
 
         return totalAttacks
 
-    #Calculates the hitting Queens of the board
+    #Calculates the hitting Queens of the board and sets it to the heuristic
     def checkTotalHittingQueens(self):
         print("Checking how many queens are hitting each other")
 
+        #Loop through all the nodes in the board
         for i in xrange(self.dimensions):
                 for j in xrange(self.dimensions):
                     if(self.grid[i][j].queen == True):
+                        #If its a queen then check which queens its hitting
                         self.checkHittingQueens(i,j)
 
+        #Sum up all the .hitting that each queen is hitting
         totalAttacks = self.addTotalHittingQueens()
 
-        return (totalAttacks/2)
+        #Set the heuristic
+        self.h = totalAttacks/2
 
 
-    #Check Horizontal
+
+    #Checks how many queens is hitting Horizontally
     def checkHorizontalAttacks(self,i,j):
         for j_t in xrange(self.dimensions):
             if(self.grid[i][j_t].queen == True and j_t != j):
                 self.grid[i][j].hitting += 1
 
 
-    #Check Vertical
+    #Checks how many queens is hitting Vertically
     def checkVerticalAttacks(self,i,j):
         for i_t in xrange(self.dimensions):
             if(self.grid[i_t][j].queen == True and i_t != i):
                 self.grid[i][j].hitting += 1
 
-    #Diagonal /
+    #Checks ho wmany queens is hitting Diagonally /
     def checkDiagonalFAttacks(self,i,j):
         currI = i
         currJ = j
+
+        #Go to the bottom
         while(currI != 0 and currJ != (self.dimensions-1)):
             currI -= 1
             currJ += 1
 
+        #Check diagonally
         for i_t in xrange(self.dimensions):
             newI = currI+i_t
             newJ = currJ-i_t
@@ -67,10 +76,12 @@ class Board:
     def checkDiagonalBAttacks(self,i,j):
         currI = i
         currJ = j
+        #Go to the top
         while(currI != 0 and currJ != 0):
             currI -= 1
             currJ -= 1
 
+        #Check diagonally
         for i_t in xrange(self.dimensions):
             newI = currI+i_t
             newJ = currJ+i_t
