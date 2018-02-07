@@ -15,11 +15,23 @@ def main():
     #Set random Queens for the Board and print it to the user
     gameBoard.setRandomQueens()
 
-    #Print the Board iwthout the heuristic
+    #Print the Board without the heuristic
     gameBoard.printBoard()
 
     #Set all the heuristic of the board
     gameBoard.setAllBoardNodesHeuristic()
+
+    """
+    hillclimb test
+    gameBoard.printBoard()
+    gameBoard.checkTotalHittingQueens()
+    print"CURRENT H: ",gameBoard.h
+    gameBoard.findlowestH()
+    """
+    """
+    if searchType == 2:
+        gameBoard.hillclimb()
+    """
 
     #Print the Board with the heuristics
     gameBoard.printBoard()

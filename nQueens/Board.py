@@ -1,6 +1,7 @@
 import math
 import random
 from node import Node
+import time
 
 #The class for the Board
 class Board:
@@ -9,6 +10,34 @@ class Board:
         self.h = 0
         self.grid = [[Node() for j in range(0,n)] for i in range(0,n) ]
         self.previous = None
+
+    def findlowestH(self):
+        # go through each node and find lowest value
+        lowest_h = self.h
+        low_i = 0
+        low_j = 0
+        for i in xrange(self.dimensions):
+            for j in xrange(self.dimensions):
+                if (self.grid[i][j].queen != True):
+                    # compare h value
+                    if self.grid[i][j].h < lowest_h:
+                        lowest_h = self.grid[i][j].h
+                        low_i = i
+                        low_j = j
+                        print"lowest H of ",lowest_h," found at [",i,"]","[",j,"]"
+        # CLIMB ONCE
+        self.checkTotalHittingQueens()
+        current_h = self.h
+        if current_h > lowest_h:
+            # move queen
+            for j in xrange(self.dimensions):
+                if (self.grid[low_i][j].queen == True):
+                    self.grid[low_i][j].queen = False
+            self.grid[low_i][low_j].queen = True
+            self.checkTotalHittingQueens()
+
+        return (lowest_h, low_i, low_j)
+
 
     #Sets the values of all the nodes in the Board to the lowest heuristic (#HittingQueens + #Tiles^2)
     def setAllBoardNodesHeuristic(self):
@@ -40,11 +69,13 @@ class Board:
                 #Set The heuristic to the node
                 movementCost = 10 + (abs(jQ - j) ** 2)
 
-                nodeHeur = self.h + movementCost
+                nodeHeur = self.h
 
                 print("These many queens are hitting each other " + str(nodeHeur))
 
                 self.grid[iQ][j].h = nodeHeur
+                self.grid[iQ][j].g = movementCost
+                self.grid[iQ][j].f = nodeHeur + movementCost
 
                 #Set the position to not longer be a queen
                 self.grid[iQ][j].queen = False
@@ -87,8 +118,6 @@ class Board:
 
         #Sum up all the .hitting that each queen is hitting
         totalAttacks = self.addTotalHittingQueens()
-
-
 
         #Set the heurstic
         if(totalAttacks == 0):
