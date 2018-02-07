@@ -1,3 +1,12 @@
+# noinspection SpellCheckingInspection,PyUnusedLocal,PyTrailingSemicolon,PyTrailingSemicolon,PyTrailingSemicolon,PyTrailingSemicolon,PyTrailingSemicolon,PyTrailingSemicolon,PyTrailingSemicolon,PyTrailingSemicolon,PyTrailingSemicolon,PyTrailingSemicolon,PyTrailingSemicolon,PyTrailingSemicolon,PyTrailingSemicolon,PyTrailingSemicolon,PyTrailingSemicolon,PyTrailingSemicolon,PyTrailingSemicolon,PyTrailingSemicolon,PyTrailingSemicolon,PyTrailingSemicolon,PyTrailingSemicolon
+
+def printMapNicely(mapToPrint):
+    for row in range(len(mapToPrint)):
+        print(mapToPrint[row]);
+    print("");
+
+
+# noinspection PyRedundantParentheses
 def parseUrbanMap(textfile):
     # This function reads in a textfile and parses the content into
     # 3 integers and a 3D array
@@ -10,10 +19,10 @@ def parseUrbanMap(textfile):
     urbanMap = f.readlines();
     f.close();
 
-    #print(industrialCount);
-    #print(commercialCount);
-    #print(residentialCount);
-    #print(urbanMap);
+    print(industrialCount);
+    print(commercialCount);
+    print(residentialCount);
+    print(urbanMap);
 
     #This subfunction splits the urbanMap into an array
     # First, create the empty 3D array...
@@ -24,6 +33,7 @@ def parseUrbanMap(textfile):
     mapLengthArray = mapLengthString.split(',');
     #we now have the dimensions required to make the array
 
+    # noinspection PyUnusedLocal
     urbanMapArray = [[["-" for dep in range(2)] for col in range(len(mapLengthArray))] for row in range(len(urbanMap))];
     #now we have an empty array with dimensions CxRx2
     print(urbanMapArray);
@@ -40,9 +50,17 @@ def parseUrbanMap(textfile):
             currentElement = mapArray[col].rstrip();
             print(currentElement);
             urbanMapArray[row][col][0] = currentElement;
+            if (currentElement == 'X' or currentElement == 'S'):
+                urbanMapArray[row][col][1] = currentElement;
+
     #Assuming this works, we now can print this
 
-    print(urbanMapArray);
+    #print(urbanMapArray);
+    #Python's print statement is garbage, so here's a nicer custom one
+    printMapNicely(urbanMapArray);
+    #Prints map in shape given by file, but each file element now also includes an empty space for the kind of building
+    # that will go on top of it.
+    return industrialCount, commercialCount, residentialCount, urbanMapArray;
 
 
 
