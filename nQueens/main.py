@@ -15,26 +15,32 @@ def main():
     #Set random Queens for the Board and print it to the user
     gameBoard.setRandomQueens()
 
-    #Print the Board without the heuristic
-    gameBoard.printBoard()
+    #Print the Board without the heuristic (starting state)
+    #gameBoard.printBoard()
 
     #Set all the heuristic of the board
-    gameBoard.setAllBoardNodesHeuristic()
+    #gameBoard.setAllBoardNodesHeuristic()
 
+    # Print the Board with the heuristics
+    #gameBoard.printBoard()
+
+
+    # hillclimb test
     """
-    hillclimb test
     gameBoard.printBoard()
     gameBoard.checkTotalHittingQueens()
     print"CURRENT H: ",gameBoard.h
     gameBoard.findlowestH()
-    """
-    """
-    if searchType == 2:
-        gameBoard.hillclimb()
+    gameBoard.printBoard()
+    gameBoard.setAllBoardNodesHeuristic()
+    gameBoard.findlowestH()
     """
 
-    #Print the Board with the heuristics
-    gameBoard.printBoard()
+    if searchType == 2:
+        gameBoard.hillclimb()
+
+
+
 
     #Get the heuristic of the board after calculating all the node's heuristic
     gameBoard.checkTotalHittingQueens()
