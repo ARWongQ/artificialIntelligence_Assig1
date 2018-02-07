@@ -10,10 +10,51 @@ class Board:
         self.grid = [[Node() for j in range(0,n)] for i in range(0,n) ]
         self.previous = None
 
+    #Sets the values of all the nodes in the Board to the lowest heuristic (#HittingQueens + #Tiles^2)
+    def setAllBoardNodesHeuristic(self):
+        print("Setting all the boards")
+
+        #Loop through the entire Board
+        for i in xrange(self.dimensions):
+            for j in xrange(self.dimensions):
+                if(self.grid[i][j].queen == True):
+                    print("Checking Queen in Pos " + str(i) + " " + str(j))
+                    self.getQueensMovesHeuristics(i,j)
+
+    #Sets the heuristic for the given Queen's Row (Is)
+    def getQueensMovesHeuristics(self,iQ,jQ):
+        #Set the current position to not have a queen bc it will move
+        self.grid[iQ][jQ].queen = False
+
+        #Loop through the entire Row
+        for j in xrange(self.dimensions):
+            if(jQ != j):
+                print("Checking Positions " + str(iQ) + " " + str(j))
+                #set the position to be a queen
+                self.grid[iQ][j].queen = True
+
+                #Calculate and set the board's heuristic
+                self.checkTotalHittingQueens()
+
+
+                #Set The heuristic to the node
+                nodeHeur = self.h
+
+                print("These many queens are hitting each other " + str(nodeHeur))
+
+                self.grid[iQ][j].h = nodeHeur
+
+                #Set the position to not longer be a queen
+                self.grid[iQ][j].queen = False
+
+
+        #Set the queen Back Position to have a queen
+        self.grid[iQ][jQ].queen = True
 
     #Sums all the queens that are attacking
     def addTotalHittingQueens(self):
         totalAttacks = 0
+        #Loop through the entire board and add the hitting queens
         for i in xrange(self.dimensions):
                 for j in xrange(self.dimensions):
                     if(self.grid[i][j].queen == True):
@@ -21,9 +62,19 @@ class Board:
 
         return totalAttacks
 
+    #Clears all the hitting values of the nodes
+    def clearAllNodeValues(self):
+        #Loop through the entire board and set all the hitting to 0
+        for i in xrange(self.dimensions):
+                for j in xrange(self.dimensions):
+                    self.grid[i][j].hitting = 0
+
     #Calculates the hitting Queens of the board and sets it to the heuristic
     def checkTotalHittingQueens(self):
         print("Checking how many queens are hitting each other")
+
+        #Clear all the values to not double count
+        self.clearAllNodeValues()
 
         #Loop through all the nodes in the board
         for i in xrange(self.dimensions):
@@ -34,6 +85,8 @@ class Board:
 
         #Sum up all the .hitting that each queen is hitting
         totalAttacks = self.addTotalHittingQueens()
+
+
 
         #Set the heurstic
         if(totalAttacks == 0):
