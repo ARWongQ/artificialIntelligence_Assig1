@@ -35,8 +35,12 @@ class Board:
         #Sum up all the .hitting that each queen is hitting
         totalAttacks = self.addTotalHittingQueens()
 
-        #Set the heuristic
-        self.h = totalAttacks/2
+        #Set the heurstic
+        if(totalAttacks == 0):
+            self.h = 0
+        else:
+            #self.h = 10 + totalAttacks/2
+            self.h = totalAttacks/2
 
 
 
@@ -117,17 +121,25 @@ class Board:
         print ("Setting random queens")
 
         queensToAdd = self.dimensions
-
         bound = self.dimensions - 1
+
+        #List of Booleans to keep track of the taken rows (Is)
+        takenIs = [False for i in range(queensToAdd)]
 
         #Add n random queens
         while(queensToAdd > 0):
+            #Get random Is and Js
             i = random.randint(0,bound)
             j = random.randint(0,bound)
 
+            #Check if the spot is taken
             if(self.grid[i][j].queen == False):
-                self.grid[i][j].queen = True
-                queensToAdd -= 1
+                #Check if the row is not taken
+                if(takenIs[i] == False):
+                    #Add the queen and check the spot as taken
+                    self.grid[i][j].queen = True
+                    queensToAdd -= 1
+                    takenIs[i] = True
 
 
     #Prints the Board to the user
