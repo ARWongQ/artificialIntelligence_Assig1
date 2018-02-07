@@ -1,4 +1,4 @@
-
+import math
 import random
 from node import Node
 
@@ -38,7 +38,9 @@ class Board:
 
 
                 #Set The heuristic to the node
-                nodeHeur = self.h
+                movementCost = 10 + (abs(jQ - j) ** 2)
+
+                nodeHeur = self.h + movementCost
 
                 print("These many queens are hitting each other " + str(nodeHeur))
 
