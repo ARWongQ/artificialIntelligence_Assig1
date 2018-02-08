@@ -2,14 +2,18 @@ import math
 import random
 from node import Node
 import time
+import copy
 
 #The class for the Board
 class Board:
     def __init__(self,n):
         self.dimensions = n
         self.h = 0
+        self.g = 0
+        self.f = 0
         self.grid = [[Node() for j in range(0,n)] for i in range(0,n) ]
         self.previous = None
+        self.neighbors = []
 
     # performs hillclimbing algorithm on initialized board
     def hillclimb(self):
@@ -140,6 +144,68 @@ class Board:
 
         #Set the queen Back Position to have a queen
         self.grid[iQ][jQ].queen = True
+
+    def GetAllSuccessors(self):
+
+        AllpossibleBoards = []
+
+        #Loop through the entire Board
+        for i in xrange(self.dimensions):
+            for j in xrange(self.dimensions):
+                if(self.grid[i][j].queen == True):
+                    #Get n-1 boards for that row
+                    currentPossible = self.getQueenSuccesor(i,j)
+
+                    #Append the row
+                    for k in xrange(self.dimensions - 1):
+                        AllpossibleBoards.append(currentPossible[k])
+
+        return AllpossibleBoards
+
+
+    #Return a list n-1 of boards (possible moves)
+    def getQueenSuccesor(self,iQ,jQ):
+        #Store the possible list for this outcome
+        possibleBoards = []
+
+        #Set the current position to not have a queen bc it will move
+        self.grid[iQ][jQ].queen = False
+
+        #Loop through the entire Row
+        for j in xrange(self.dimensions):
+            if(jQ != j):
+                #set the position to be a queen
+                self.grid[iQ][j].queen = True
+
+                #Calculate and set the board's heuristic
+                self.checkTotalHittingQueens()
+
+
+                #Set The heuristic to the node
+                movementCost = 10 + (abs(jQ - j) ** 2)
+
+                tempG = self.g + movementCost
+
+
+                #Make a deep copy of the object
+                tempBoard = copy.deepcopy(self)
+                tempBoard.g = tempG
+                tempBoard.f = tempBoard.g + tempBoard.h
+
+                #Append to the possibleBoards
+                possibleBoards.append(tempBoard)
+
+                #Set the position to not longer be a queen
+                self.grid[iQ][j].queen = False
+
+
+        #Set the queen Back Position to have a queen
+        self.grid[iQ][jQ].queen = True
+
+        return possibleBoards
+
+
+
 
     #Sums all the queens that are attacking
     def addTotalHittingQueens(self):

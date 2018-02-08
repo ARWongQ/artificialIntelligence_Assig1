@@ -1,4 +1,5 @@
 from Board import Board
+from priorityQueue import PriorityQueue
 
 #Main Function
 def main():
@@ -13,8 +14,8 @@ def main():
     print(" ")
 
     #Set random Queens for the Board and print it to the user
-    gameBoard.setRandomQueens()
-    gameBoard.printBoard()
+    #gameBoard.setRandomQueens()
+    #gameBoard.printBoard()
 
     #Print the Board without the heuristic (starting state)
     #gameBoard.printBoard()
@@ -39,6 +40,36 @@ def main():
 
     if searchType == 2:
         gameBoard.hillclimb()
+
+    else:
+        gameBoard.grid[0][0].queen = True
+        gameBoard.grid[1][0].queen = True
+        gameBoard.grid[2][0].queen = True
+
+        gameBoard.printBoard()
+
+        allBoards = gameBoard.GetAllSuccessors()
+
+        secondGeneration = allBoards[0].GetAllSuccessors()
+
+        for currBoard in secondGeneration:
+            currBoard.printBoard()
+            print("The F value of the top Board is: " + str(currBoard.f))
+            print("The G value of the top Board is: " + str(currBoard.g))
+
+        """
+        allBoardPQ = PriorityQueue()
+
+        for currBoard in allBoards:
+            allBoardPQ.push(currBoard,currBoard.f)
+
+        BestBoard = allBoardPQ.pop()
+        BestBoard.printBoard()
+
+        BestBoard2 = allBoardPQ.pop()
+        BestBoard2.printBoard()
+        """
+
 
 
 
