@@ -13,7 +13,7 @@ class Board:
 
     def findlowestH(self):
         # go through each node and find lowest value
-        lowest_h = self.h
+        lowest_h = self.h #Why is this lowest_h ? when you wnat the lowest node
         low_i = 0
         low_j = 0
         for i in xrange(self.dimensions):
