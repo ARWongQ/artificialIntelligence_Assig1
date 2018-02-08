@@ -50,10 +50,15 @@ class Board:
         if current_h > 0:
             print("LOCAL SOLUTION FOUND\n")
             list_endboards.append(0)
+
+            self.printBoard()
         else:
             solution_found = True
             print("GLOBAL SOLUTION FOUND\n")
             list_endboards.append(0)
+
+            self.printBoard()
+
         # reset board
         # self.setNewRandomQueens()
         print "# nodes expanded = ", nodes_expanded
@@ -98,13 +103,11 @@ class Board:
 
     #Sets the values of all the nodes in the Board to the lowest heuristic (#HittingQueens + #Tiles^2)
     def setAllBoardNodesHeuristic(self):
-        print("Setting all the boards")
 
         #Loop through the entire Board
         for i in xrange(self.dimensions):
             for j in xrange(self.dimensions):
                 if(self.grid[i][j].queen == True):
-                    print("Checking Queen in Pos " + str(i) + " " + str(j))
                     self.getQueensMovesHeuristics(i,j)
 
     #Sets the heuristic for the given Queen's Row (Is)
@@ -115,7 +118,6 @@ class Board:
         #Loop through the entire Row
         for j in xrange(self.dimensions):
             if(jQ != j):
-                print("Checking Positions " + str(iQ) + " " + str(j))
                 #set the position to be a queen
                 self.grid[iQ][j].queen = True
 
@@ -127,8 +129,6 @@ class Board:
                 movementCost = 10 + (abs(jQ - j) ** 2)
 
                 nodeHeur = self.h
-
-                print("These many queens are hitting each other " + str(nodeHeur))
 
                 self.grid[iQ][j].h = nodeHeur
                 self.grid[iQ][j].g = movementCost
@@ -161,7 +161,7 @@ class Board:
 
     #Calculates the hitting Queens of the board and sets it to the heuristic
     def checkTotalHittingQueens(self):
-        print("Checking how many queens are hitting each other")
+        #print("Checking how many queens are hitting each other")
 
         #Clear all the values to not double count
         self.clearAllNodeValues()

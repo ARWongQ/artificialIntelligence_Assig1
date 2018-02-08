@@ -14,6 +14,7 @@ def main():
 
     #Set random Queens for the Board and print it to the user
     gameBoard.setRandomQueens()
+    gameBoard.printBoard()
 
     #Print the Board without the heuristic (starting state)
     #gameBoard.printBoard()
@@ -43,14 +44,12 @@ def main():
 
 
     #Get the heuristic of the board after calculating all the node's heuristic
-    gameBoard.checkTotalHittingQueens()
-
-
+    #gameBoard.checkTotalHittingQueens()
 
     #Print the heurstic of the queens
-    hitting = gameBoard.h
-    print("These many queens are hitting each other")
-    print(hitting)
+    #hitting = gameBoard.h
+    #print("These many queens are hitting each other")
+    #print(hitting)
 
 
 
