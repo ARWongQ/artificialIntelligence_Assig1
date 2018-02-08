@@ -14,27 +14,24 @@ def getElementsInMDist(mapToScore, row, col, dist): #map, 0, 0, 2
             coordC = col + curC;
             if (0 <= coordR < maxRow and 0 <= coordC < maxCol):
                 if (not (coordR == row and coordC == col)):
-                    print(coordR, coordC);
+                    #print(coordR, coordC);
                     currentElement = mapToScore[coordR][coordC][1];
                     if (currentElement != '-'):
-                        print("Symbol: " + currentElement + " is in range at Coords: " + str(coordR) + ", " + str(coordC) + ".");
+                        #print("Symbol: " + currentElement + " is in range at Coords: " + str(coordR) + ", " + str(coordC) + ".");
                         elementsFound.append(currentElement);
 
-    print(elementsFound);
+    #print(elementsFound);
     return elementsFound;
 
 
 # noinspection PyRedundantParentheses
-def getMapScore(mapInfo):
-    industrialCount = mapInfo[0];
-    commercialCount = mapInfo[1];
-    residentialCount = mapInfo[2];
-    mapToScore = mapInfo[3];
+def getMapScore(map):
+    mapToScore = map.map
     print("Scoring the following map:");
     mapToScore[0][3][1] = 'R';
     mapToScore[2][1][1] = 'I';
     mapToScore[2][2][1] = 'C';
-    UPParser.printMapNicely(mapToScore);
+    UPParser.printMapNicely(map);
 
     #Using X, S, I, C, R as markers for the map-overlay to represent building types
     # Rules for Scoring
@@ -54,7 +51,7 @@ def getMapScore(mapInfo):
             mapElement = mapToScore[row][col][1];
             # noinspection PyRedundantParentheses
             if(mapElement != '-'):
-                print("\nFound Symbol: "+mapElement+" at Coords: "+str(row)+", "+str(col)+".");
+                #print("\nFound Symbol: "+mapElement+" at Coords: "+str(row)+", "+str(col)+".");
                 #handle Toxic Waste Zone (X)
                 # X: I within 2 tiles = -10, C within 2 tiles = -20, R within 2 tiles = -20
                 if (mapElement == 'X'):
@@ -105,7 +102,8 @@ def getMapScore(mapInfo):
                             currentScore -= 5;
                         if elementsNearbyR[i] == 'C':
                             currentScore += 5;
-    print("\nThe Score is: " + str(currentScore));
+    #print("\nThe Score is: " + str(currentScore));
+    return currentScore
 
 
 

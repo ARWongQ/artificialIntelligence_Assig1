@@ -11,11 +11,62 @@ class Board:
         self.grid = [[Node() for j in range(0,n)] for i in range(0,n) ]
         self.previous = None
 
+    # performs hillclimbing algorithm on initialized board
+    def hillclimb(self):
+        print "RUNNING HILLCLIMB"
+        # initial conditions
+        t_stop = time.time() + 10
+        list_endboards = []
+        solution_found = False
+        # run hillclimb with restarts for 10 seconds (if no solution found yet)
+        # while time.time() < t_stop and not (solution_found):
+        # climb initial conditions
+        climb = True
+        nodes_expanded = 1
+        # keep climbing until local optimal reached
+        while climb:
+            self.checkTotalHittingQueens()
+            current_h = self.h
+            print "CURRENT H: ", self.h
+            # break if solution found
+            if current_h == 0:
+                print "SOLUTION FOUND!"
+                break
+            # calculate h for all
+            self.setAllBoardNodesHeuristic()
+            self.printBoard()
+            # find lowest board
+            lowest = self.findlowestH()
+            if current_h > lowest[0]:
+                # move queen
+                for j in xrange(self.dimensions):
+                    if (self.grid[lowest[1]][j].queen == True):
+                        self.grid[lowest[1]][j].queen = False
+                self.grid[lowest[1]][lowest[2]].queen = True
+                nodes_expanded += 1
+            else:
+                climb = False
+        # check if local or global solution
+        if current_h > 0:
+            print("LOCAL SOLUTION FOUND\n")
+            list_endboards.append(0)
+        else:
+            solution_found = True
+            print("GLOBAL SOLUTION FOUND\n")
+            list_endboards.append(0)
+        # reset board
+        # self.setNewRandomQueens()
+        print "# nodes expanded = ", nodes_expanded
+    # choose best solution out of restarts
+    # output data
+
+    # finds move with lowest heuristic value given board with h calculated
     def findlowestH(self):
         # go through each node and find lowest value
         lowest_h = self.h #Why is this lowest_h ? when you wnat the lowest node
         low_i = 0
         low_j = 0
+        print "Finding lowest H on board"
         for i in xrange(self.dimensions):
             for j in xrange(self.dimensions):
                 if (self.grid[i][j].queen != True):
@@ -25,6 +76,11 @@ class Board:
                         low_i = i
                         low_j = j
                         print"lowest H of ",lowest_h," found at [",i,"]","[",j,"]"
+                    if self.grid[i][j].h == lowest_h:
+                        # come up with random choice
+                        print "equal lowest H of ",lowest_h," found at [",i,"]","[",j,"]"
+                        pass
+        """
         # CLIMB ONCE
         self.checkTotalHittingQueens()
         current_h = self.h
@@ -35,6 +91,7 @@ class Board:
                     self.grid[low_i][j].queen = False
             self.grid[low_i][low_j].queen = True
             self.checkTotalHittingQueens()
+        """
 
         return (lowest_h, low_i, low_j)
 
