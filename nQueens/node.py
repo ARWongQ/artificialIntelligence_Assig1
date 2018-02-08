@@ -6,5 +6,6 @@ class Node:
         self.f = 0
         self.queen = False
         self.hitting = 0
+        self.firstExplored = False
 
 
