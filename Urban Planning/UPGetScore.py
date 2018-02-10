@@ -27,11 +27,11 @@ def getElementsInMDist(mapToScore, row, col, dist): #map, 0, 0, 2
 # noinspection PyRedundantParentheses
 def getMapScore(map):
     mapToScore = map.map
-    print("Scoring the following map:");
-    mapToScore[0][3][1] = 'R';
-    mapToScore[2][1][1] = 'I';
-    mapToScore[2][2][1] = 'C';
-    UPParser.printMapNicely(map);
+    #print("Scoring the following map:");
+    # mapToScore[0][3][1] = 'R';
+    # mapToScore[2][1][1] = 'I';
+    # mapToScore[2][2][1] = 'C';
+    #UPParser.printMapNicely(map);
 
     #Using X, S, I, C, R as markers for the map-overlay to represent building types
     # Rules for Scoring

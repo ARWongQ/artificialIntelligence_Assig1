@@ -18,4 +18,5 @@ class PriorityQueue:
         #decrease index
         self.index -= 1
         #Pop node in the top of queue
-        return heapq.heappop(self.queue)[-1]
+        return heapq.nlargest(1,self.queue)[-1]
+        # return heapq.heappop(self.queue)[-1]
