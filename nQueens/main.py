@@ -24,23 +24,29 @@ def main():
         startTime = time.time()
 
         #Run A*
-        path =gameBoard.aStarPQ()
+        path = gameBoard.aStarPQ()
 
         #Print the stats
         totalTime = time.time() - startTime
 
         i = 0
-        for currBoard in reversed(path):
+        lastBoardCost = 0
+        for currBoard in reversed(path[0]):
             if i == 0:
-                print("Starting Board is")
+                print("Starting Board is ----------")
             else:
                 print("Step " + str(i) + " ----------")
 
             currBoard.printBoard()
             i += 1
+            #Keep track of the total cost
+            lastBoardCost = currBoard.g
 
 
         print("It took A* "+ str(totalTime) + " seconds to solve the "+ str(nValue) +"-queens problem")
+        print("With Expanded Nodes: " + str(path[1]))
+        print("With a branching factor of " + str(path[2]))
+        print("And a cost of " + str(lastBoardCost))
 
         return
 
@@ -55,7 +61,7 @@ def main():
         gameBoard.grid[2][0].queen = True
         gameBoard.grid[3][0].queen = True
         gameBoard.grid[4][0].queen = True
-        #gameBoard.grid[5][0].queen = True
+        gameBoard.grid[5][0].queen = True
 
 
         gameBoard.queenPositions.append(QueenPos(0,0))
@@ -63,10 +69,39 @@ def main():
         gameBoard.queenPositions.append(QueenPos(2,0))
         gameBoard.queenPositions.append(QueenPos(3,0))
         gameBoard.queenPositions.append(QueenPos(4,0))
-        #gameBoard.queenPositions.append(QueenPos(5,0))
+        gameBoard.queenPositions.append(QueenPos(5,0))
 
 
-        gameBoard.aStarPQ()
+        #Start the time
+        startTime = time.time()
+
+        #Run A*
+        path = gameBoard.aStarPQ()
+
+        #Print the stats
+        totalTime = time.time() - startTime
+
+        i = 0
+        lastBoardCost = 0
+        for currBoard in reversed(path[0]):
+            if i == 0:
+                print("Starting Board is ----------")
+            else:
+                print("Step " + str(i) + " ----------")
+
+            currBoard.printBoard()
+            i += 1
+
+            lastBoardCost = currBoard.g
+
+
+        print("It took A* "+ str(totalTime) + " seconds to solve the "+ str(nValue) +"-queens problem")
+        print("With Expanded Nodes: " + str(path[1]))
+        print("With a branching factor of " + str(path[2]) )
+        print("And a cost of " + str(lastBoardCost))
+
+
+
         return
 
     else:

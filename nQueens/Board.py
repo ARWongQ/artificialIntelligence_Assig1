@@ -154,6 +154,10 @@ class Board:
     #Runs A* on initialized board to get the optimal solution
     def aStarPQ(self):
         print("Running A*")
+        #Keep track of the expanded nodes (including the starting node)
+        expandedNodes = 1
+        #Keep track of successors
+        branchingNodes = 0
 
         #Copying the board
         startBoard = copy.deepcopy(self)
@@ -188,7 +192,7 @@ class Board:
                     movesPath.append(temp.previous)
                     temp = temp.previous
 
-                return movesPath
+                return (movesPath,expandedNodes, branchingNodes)
 
 
 
@@ -207,15 +211,20 @@ class Board:
             #Create all the neighbor (possible moves) of that board
             currentBoard.neighbors = currentBoard.GetAllSuccessors()
 
+            #Increase the expanded nodes
+            expandedNodes += 1
+
             for curNeighbor in currentBoard.neighbors:
+                branchingNodes += 1
                 #print("Checking Neighbor")
                 #Check if the node has not already been evaluated
-                isInListTwo = curNeighbor.checkBoardInList(closedSet)
+                #isInListTwo = curNeighbor.checkBoardInList(closedSet)
 
-                if(not isInListTwo):
+                #if(not isInListTwo):
+                if(True):
                     #Set the link
                     curNeighbor.previous = currentBoard
-                    curNeighbor.h = curNeighbor.h * 20
+                    curNeighbor.h = curNeighbor.h * 100
                     #Add the neighbor in the Priority Q
                     openPQ.push(curNeighbor,curNeighbor.h + curNeighbor.g)
 
@@ -365,8 +374,8 @@ class Board:
         if(totalAttacks == 0):
             self.h = 0
         else:
-            #self.h = 10 + totalAttacks/2
-            self.h = totalAttacks/2
+            self.h = 10 + (totalAttacks/2)
+            #self.h = totalAttacks/2
 
 
 
