@@ -149,20 +149,17 @@ class Board:
         #Set the queen Back Position to have a queen
         self.grid[iQ][jQ].queen = True
 
+
+
     #Runs A* on initialized board to get the optimal solution
     def aStarPQ(self):
         print("Running A*")
 
-
-        #Store the starting Board data
-        print("Starting Board")
-
+        #Copying the board
         startBoard = copy.deepcopy(self)
-        startBoard.printBoard()
 
         #Set the data of the board
         startBoard.checkTotalHittingQueens()
-        print("The heuristic of this board is " + str(startBoard.h))
 
         #Add the starting node to the priority queue
         openPQ =  PriorityQueue()
@@ -180,25 +177,29 @@ class Board:
             if(currentBoard.h == 0):
                 #Success
                 print("We have found a solution")
-                currentBoard.printBoard()
-                h = currentBoard.h
-                f = currentBoard.f
-                g = currentBoard.g
-                print("The stats of this board is " + str(h) + " " + str(g)+ " " + str(f))
 
-                return
+                #Make the path towards the solution
+                movesPath = []
+                temp = currentBoard
+                movesPath.append(temp)
+
+                #Add the order of the path (backtracking)
+                while(temp.previous):
+                    movesPath.append(temp.previous)
+                    temp = temp.previous
+
+                return movesPath
 
 
+
+            #print("Evaluating Board")
             #If the board has already been evaluated then loop from the beginning
             isInList = currentBoard.checkBoardInList(closedSet)
             #print("Hello World1")
             if(isInList):
                 continue
 
-            print("Evaluating Board")
 
-            #if(currentBoard in closedSet):
-            #    continue
 
             #Since we are evaluting this node we want to add it in the closedSet
             closedSet.append(currentBoard)
@@ -209,19 +210,14 @@ class Board:
             for curNeighbor in currentBoard.neighbors:
                 #print("Checking Neighbor")
                 #Check if the node has not already been evaluated
-                #isInListTwo = curNeighbor.checkBoardInList(closedSet)
+                isInListTwo = curNeighbor.checkBoardInList(closedSet)
 
-                #if(not isInListTwo):
-                #    print("Neighbor not in closedSet")
-
+                if(not isInListTwo):
                     #Set the link
                     curNeighbor.previous = currentBoard
-                    curNeighbor.h = curNeighbor.h * 30
+                    curNeighbor.h = curNeighbor.h * 20
                     #Add the neighbor in the Priority Q
                     openPQ.push(curNeighbor,curNeighbor.h + curNeighbor.g)
-
-                #else:
-                #    print("Neighbor in closedSet")
 
         #If the while loop finishes without finding a solution
         #Then there is no solution for this problem (No attacking queens at all)
@@ -446,9 +442,23 @@ class Board:
         #Sets new Queens
         self.setRandomQueens()
 
+
+    def setRandomQueensTwo(self):
+        #print("Setting random queens")
+        #Range of random integer
+        bound = self.dimensions - 1
+
+        for i in xrange(self.dimensions):
+            j = random.randint(0,bound)
+            self.grid[i][j].queen = True
+            self.queenPositions.append(QueenPos(i,j))
+
+
+
+
     #Sets random Queens
     def setRandomQueens(self):
-        print ("Setting random queens")
+        #print ("Setting random queens")
 
         queensToAdd = self.dimensions
         bound = self.dimensions - 1
@@ -474,8 +484,6 @@ class Board:
 
     #Prints the Board to the user
     def printBoard(self):
-        print ("Printing Board")
-
         #Prints all the elements inside the board
         for i in xrange(self.dimensions):
                 for j in xrange(self.dimensions):
