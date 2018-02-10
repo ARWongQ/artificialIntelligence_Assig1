@@ -1,6 +1,8 @@
 import math
 import random
 from node import Node
+from queenPos import QueenPos
+from priorityQueue import PriorityQueue
 import time
 import copy
 
@@ -12,8 +14,10 @@ class Board:
         self.g = 0
         self.f = 0
         self.grid = [[Node() for j in range(0,n)] for i in range(0,n) ]
-        self.previous = None
         self.neighbors = []
+        self.previous = None
+        self.queenPositions = []
+
 
     # performs hillclimbing algorithm on initialized board
     def hillclimb(self):
@@ -145,8 +149,123 @@ class Board:
         #Set the queen Back Position to have a queen
         self.grid[iQ][jQ].queen = True
 
-    def GetAllSuccessors(self):
+    #Runs A* on initialized board to get the optimal solution
+    def aStarPQ(self):
+        print("Running A*")
 
+
+        #Store the starting Board data
+        print("Starting Board")
+
+        startBoard = copy.deepcopy(self)
+        startBoard.printBoard()
+
+        #Set the data of the board
+        startBoard.checkTotalHittingQueens()
+        print("The heuristic of this board is " + str(startBoard.h))
+
+        #Add the starting node to the priority queue
+        openPQ =  PriorityQueue()
+        openPQ.push(startBoard, startBoard.h)
+
+        #Boards after evaluation
+        closedSet = []
+
+        #Loop until the PQ is empty or until we find the solution
+        while(openPQ.index >= 1):
+            #The Current Board to be checked
+            currentBoard = openPQ.pop()
+
+            #Check if we have found a board that has no attacking queens
+            if(currentBoard.h == 0):
+                #Success
+                print("We have found a solution")
+                currentBoard.printBoard()
+                h = currentBoard.h
+                f = currentBoard.f
+                g = currentBoard.g
+                print("The stats of this board is " + str(h) + " " + str(g)+ " " + str(f))
+
+                return
+
+
+            #If the board has already been evaluated then loop from the beginning
+            isInList = currentBoard.checkBoardInList(closedSet)
+            #print("Hello World1")
+            if(isInList):
+                continue
+
+            print("Evaluating Board")
+
+            #if(currentBoard in closedSet):
+            #    continue
+
+            #Since we are evaluting this node we want to add it in the closedSet
+            closedSet.append(currentBoard)
+
+            #Create all the neighbor (possible moves) of that board
+            currentBoard.neighbors = currentBoard.GetAllSuccessors()
+
+            for curNeighbor in currentBoard.neighbors:
+                #print("Checking Neighbor")
+                #Check if the node has not already been evaluated
+                #isInListTwo = curNeighbor.checkBoardInList(closedSet)
+
+                #if(not isInListTwo):
+                #    print("Neighbor not in closedSet")
+
+                    #Set the link
+                    curNeighbor.previous = currentBoard
+                    curNeighbor.h = curNeighbor.h * 30
+                    #Add the neighbor in the Priority Q
+                    openPQ.push(curNeighbor,curNeighbor.h + curNeighbor.g)
+
+                #else:
+                #    print("Neighbor in closedSet")
+
+        #If the while loop finishes without finding a solution
+        #Then there is no solution for this problem (No attacking queens at all)
+        print("No optimal solution is possible")
+        return
+
+    #Checks if a board is already in a list by checking its queenPositions
+    def checkBoardInList(self, list):
+
+        for curBoard in list:
+
+            sameBoard =self.checkBoardWithBoard(curBoard)
+
+            if(sameBoard == True):
+                return True
+
+        return False
+
+    def checkBoardWithBoard(self, BoardToCompare):
+        boardQueensPos = self.queenPositions
+
+        i = 0
+        for queenListPos in BoardToCompare.queenPositions:
+
+                currI = boardQueensPos[i].i
+                checkingI = queenListPos.i
+
+                currJ = boardQueensPos[i].j
+                checkingJ = queenListPos.j
+                i+=1
+
+                if(currI != checkingI or currJ != checkingJ):
+                    return False
+
+        return True
+
+
+
+
+
+
+    #Gets all the successors (possible moves) from a give board
+    def GetAllSuccessors(self):
+        #Stores a list of all the possible moves
         AllpossibleBoards = []
 
         #Loop through the entire Board
@@ -173,6 +292,7 @@ class Board:
 
         #Loop through the entire Row
         for j in xrange(self.dimensions):
+
             if(jQ != j):
                 #set the position to be a queen
                 self.grid[iQ][j].queen = True
@@ -191,6 +311,8 @@ class Board:
                 tempBoard = copy.deepcopy(self)
                 tempBoard.g = tempG
                 tempBoard.f = tempBoard.g + tempBoard.h
+                #Add the new Queen Position
+                tempBoard.queenPositions[iQ] = QueenPos(iQ,j)
 
                 #Append to the possibleBoards
                 possibleBoards.append(tempBoard)
@@ -202,6 +324,7 @@ class Board:
         #Set the queen Back Position to have a queen
         self.grid[iQ][jQ].queen = True
 
+        #Return the list of possible boards
         return possibleBoards
 
 
