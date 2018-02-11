@@ -149,13 +149,127 @@ class Board:
         #Set the queen Back Position to have a queen
         self.grid[iQ][jQ].queen = True
 
+    #Runs A* with Iterative Deepining on initialized board to get the optimal solution (for 10 seconds)
+    def aStarPQWithIterativeDeepining(self, startTime, bound):
+        print("Running A* with iterative deepining")
+        #Keep track of the expanded nodes (including the starting node)
+        expandedNodes = 0
+        #Keep track of successors
+        branchingNodes = 0
 
+        #Copying the board
+        startBoard = copy.deepcopy(self)
+
+        #Set the data of the board
+        startBoard.checkTotalHittingQueens()
+
+        #Keep track of the best board heuristic
+        bestBoardH = startBoard.h
+        bestBoardF = startBoard.f
+        bestBoard = copy.deepcopy(startBoard)
+
+        #Add the starting node to the priority queue
+        openPQ =  PriorityQueue()
+        openPQ.push(startBoard, startBoard.h)
+
+        #Boards after evaluation
+        closedSet = []
+
+        #TimeLimit
+        timeLimit = 10
+
+        #Out time limit
+        maxTime = startTime + timeLimit
+
+
+        #Loop until the PQ is empty or until we find the solution
+        while(openPQ.index >= 1 and (time.time()  < maxTime ) ):
+            #The Current Board to be checked
+            currentBoard = openPQ.pop()
+
+            #Check if we have found a board that has no attacking queens
+            if(currentBoard.h == 0):
+                total_time =time.time()-startTime
+                #Success
+                print("We have found a solution")
+
+                #Make the path towards the solution
+                movesPath = []
+                temp = currentBoard
+                movesPath.append(temp)
+
+                #Add the order of the path (backtracking)
+                while(temp.previous):
+                    movesPath.append(temp.previous)
+                    temp = temp.previous
+
+                return (movesPath, expandedNodes, branchingNodes/expandedNodes, total_time, False)
+
+            #Break if we have reached our time limit
+            if(time.time() > maxTime):
+                break
+
+            #If the board has already been evaluated then loop from the beginning
+            isInList = currentBoard.checkBoardInList(closedSet, startTime)
+
+            if(isInList):
+                continue
+
+            #Since we are evaluting this node we want to add it in the closedSet
+            closedSet.append(currentBoard)
+
+            if(time.time() > maxTime):
+                break
+
+            #Create all the neighbor (possible moves) of that board
+            currentBoard.neighbors = currentBoard.GetAllSuccessors(startTime)
+
+            #Increase the expanded nodes
+            expandedNodes += 1
+
+
+            for curNeighbor in currentBoard.neighbors:
+                branchingNodes += 1
+
+                #Break if we have reached our time limit
+                if(time.time()  > (startTime + timeLimit)):
+                    break
+
+
+
+                isInListTwo = curNeighbor.checkBoardInList(closedSet, startTime)
+
+
+                if(not isInListTwo):
+                    #Set the link
+                    curNeighbor.previous = currentBoard
+                    curNeighbor.h = curNeighbor.h * 30
+                    #Add the neighbor in the Priority Q
+
+                    #Only add it if it's less
+                    if(currentBoard.f < bound):
+                        openPQ.push(curNeighbor,curNeighbor.h + curNeighbor.g)
+
+
+        #Total time elapsed
+        total_time =time.time()-startTime
+
+        #Print the best board if we ran out of time
+        if (time.time()  > (startTime + timeLimit) ):
+            print("The algorithm ran out of time " + str(total_time) + " and it did NOT found a solution")
+
+            return None
+
+        #If the while loop finishes without finding a solution
+        #Then there is no solution for this problem (No attacking queens at all)
+        print("No optimal solution is possible")
+        return False
 
     #Runs A* on initialized board to get the optimal solution
-    def aStarPQ(self):
+    def aStarPQ(self, startTime):
         print("Running A*")
         #Keep track of the expanded nodes (including the starting node)
-        expandedNodes = 1
+        expandedNodes = 0
         #Keep track of successors
         branchingNodes = 0
 
@@ -172,13 +286,18 @@ class Board:
         #Boards after evaluation
         closedSet = []
 
+        #Out time limit
+        maxTime = startTime + 10
+
+
         #Loop until the PQ is empty or until we find the solution
-        while(openPQ.index >= 1):
+        while(openPQ.index >= 1 and (time.time()  < maxTime ) ):
             #The Current Board to be checked
             currentBoard = openPQ.pop()
 
             #Check if we have found a board that has no attacking queens
             if(currentBoard.h == 0):
+                total_time =time.time()-startTime
                 #Success
                 print("We have found a solution")
 
@@ -192,51 +311,72 @@ class Board:
                     movesPath.append(temp.previous)
                     temp = temp.previous
 
-                return (movesPath,expandedNodes, branchingNodes)
+                return (movesPath, expandedNodes, branchingNodes/expandedNodes, total_time)
 
+            #Break if we have reached our time limit
+            if(time.time() > maxTime):
+                break
 
-
-            #print("Evaluating Board")
             #If the board has already been evaluated then loop from the beginning
-            isInList = currentBoard.checkBoardInList(closedSet)
-            #print("Hello World1")
+            isInList = currentBoard.checkBoardInList(closedSet, startTime)
+
             if(isInList):
                 continue
-
-
 
             #Since we are evaluting this node we want to add it in the closedSet
             closedSet.append(currentBoard)
 
+            if(time.time() > maxTime):
+                break
+
             #Create all the neighbor (possible moves) of that board
-            currentBoard.neighbors = currentBoard.GetAllSuccessors()
+            currentBoard.neighbors = currentBoard.GetAllSuccessors(startTime)
 
             #Increase the expanded nodes
             expandedNodes += 1
 
+
             for curNeighbor in currentBoard.neighbors:
                 branchingNodes += 1
-                #print("Checking Neighbor")
-                #Check if the node has not already been evaluated
-                #isInListTwo = curNeighbor.checkBoardInList(closedSet)
 
-                #if(not isInListTwo):
-                if(True):
+                #Break if we have reached our time limit
+                if(time.time()  > (startTime + 10)):
+                    break
+
+                isInListTwo = curNeighbor.checkBoardInList(closedSet, startTime)
+
+
+                if(not isInListTwo):
                     #Set the link
                     curNeighbor.previous = currentBoard
-                    curNeighbor.h = curNeighbor.h * 100
+                    curNeighbor.h = curNeighbor.h * 30
                     #Add the neighbor in the Priority Q
                     openPQ.push(curNeighbor,curNeighbor.h + curNeighbor.g)
+
+
+        #Total time elapsed
+        total_time =time.time()-startTime
+
+        #Print the best board if we ran out of time
+        if (time.time()  > (startTime + 10) ):
+            print("The algorithm ran out of time " + str(total_time) + " and it did NOT found a solution")
+
+            return None
+
+
 
         #If the while loop finishes without finding a solution
         #Then there is no solution for this problem (No attacking queens at all)
         print("No optimal solution is possible")
-        return
+        return None
 
     #Checks if a board is already in a list by checking its queenPositions
-    def checkBoardInList(self, list):
+    def checkBoardInList(self, list, startTime):
 
         for curBoard in list:
+            #Break if we have reached our time limit
+            if(time.time() > startTime + 10):
+                return False
 
             sameBoard =self.checkBoardWithBoard(curBoard)
 
@@ -269,17 +409,20 @@ class Board:
 
 
     #Gets all the successors (possible moves) from a give board
-    def GetAllSuccessors(self):
+    def GetAllSuccessors(self,startTime):
         #Stores a list of all the possible moves
         AllpossibleBoards = []
 
         #Loop through the entire Board
         for i in xrange(self.dimensions):
             for j in xrange(self.dimensions):
+
+                if(time.time() > startTime + 10):
+                    break
+
                 if(self.grid[i][j].queen == True):
                     #Get n-1 boards for that row
                     currentPossible = self.getQueenSuccesor(i,j)
-
                     #Append the row
                     for k in xrange(self.dimensions - 1):
                         AllpossibleBoards.append(currentPossible[k])
