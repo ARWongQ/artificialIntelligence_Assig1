@@ -10,9 +10,9 @@ The program will request the user for an N-value which will create the board to 
 
 If there is no solution, A* will return that there is no optimal solution (2x2, 3x3).
 
-A*                // press 1
-greedy hill       // press 2
-A*ID              // press 3
+A*                // press 1.
+greedy hill       // press 2.
+A*ID              // press 3.
 
 
 Sample Program:
@@ -23,7 +23,8 @@ Types of Search
  3 for A* with iterative Deepining: 1
  
  
- The starting Board is ---------
+The starting Board is ---------
+
 0 0 Q 0 
 
 0 Q 0 0 
@@ -34,6 +35,7 @@ Q 0 0 0
 
 Running A*
 We have found a solution
+
 Step 1 ----------
 0 0 Q 0 
 
@@ -43,7 +45,9 @@ Q 0 0 0
 
 Q 0 0 0 
 
+
 Step 2 ----------
+
 0 0 Q 0 
 
 Q 0 0 0 
