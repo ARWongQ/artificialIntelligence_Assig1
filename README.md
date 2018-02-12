@@ -22,47 +22,5 @@ Types of Search
  2 for greedy hill climbing 
  3 for A* with iterative Deepining: 1
  
- 
-The starting Board is ---------
-
-0 0 Q 0 
-
-0 Q 0 0 
-
-0 0 0 Q 
-
-Q 0 0 0 
-
-Running A*
-We have found a solution
-
-Step 1 ----------
-0 0 Q 0 
-
-Q 0 0 0 
-
-0 0 0 Q 
-
-Q 0 0 0 
-
-
-Step 2 ----------
-
-0 0 Q 0 
-
-Q 0 0 0 
-
-0 0 0 Q 
-
-0 Q 0 0 
-
-It took A* 0.0871469974518 seconds to solve the 4-queens problem
-With Expanded Nodes: 2
-With successor per node of 12
-With an effective branching factor of 2/2
-And a cost of 22
-
-
-
 # Part 2
 Urban Planning Problem
