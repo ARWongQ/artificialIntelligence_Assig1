@@ -54,6 +54,22 @@ class UrbanMap:
         return pos
 
 
+    def findRICIndivid(self):
+        rPos = []
+        iPos = []
+        cPos = []
+        for row in range(len(self.map)):
+            for col in range(len(self.map[0])):
+                if((self.map[row][col][1] == 'R')):
+                    rPos.append([row,col])
+                elif(self.map[row][col][1] == 'I'):
+                    iPos.append([row,col])
+                elif (self.map[row][col][1] == 'C'):
+                    cPos.append([row, col])
+
+        return rPos, iPos, cPos
+
+
     def moveLeft(self,coords):
         map = copy.deepcopy(self.map)
 

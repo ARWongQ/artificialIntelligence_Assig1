@@ -58,7 +58,7 @@ def parseUrbanMap(textfile):
 
     #print(urbanMapArray);
     #Python's print statement is garbage, so here's a nicer custom one
-    newMap = UrbanMap(int(industrialCount), int(commercialCount), int(residentialCount), urbanMapArray)
+    newMap = UrbanMap(int(residentialCount), int(industrialCount), int(commercialCount), urbanMapArray)
     printMapNicely(newMap)
     #Prints map in shape given by file, but each file element now also includes an empty space for the kind of building
     # that will go on top of it.
