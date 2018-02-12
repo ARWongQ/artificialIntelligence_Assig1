@@ -68,7 +68,7 @@ def main():
             successors = path[2]
             totalTime = path[3]
             #Print the stats for A*
-            printStats(movesPath,expandedNodes,successors,totalTime,nValue)
+            printStats(movesPath,expandedNodes,successors,totalTime,nValue, astar)
 
         return
 
