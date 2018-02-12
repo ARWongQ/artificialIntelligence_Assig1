@@ -18,68 +18,101 @@ class Board:
         self.previous = None
         self.queenPositions = []
 
-
     # performs hillclimbing algorithm on initialized board
-    def hillclimb(self):
-        print "RUNNING HILLCLIMB"
+    def hillclimb(self, t_start):
+        print "Running Hillclimb...\n"
         # initial conditions
-        t_stop = time.time() + 10
+        t_stop = t_start + 10
         list_endboards = []
+        list_moves = []
         solution_found = False
-        # run hillclimb with restarts for 10 seconds (if no solution found yet)
-        # while time.time() < t_stop and not (solution_found):
-        # climb initial conditions
-        climb = True
         nodes_expanded = 1
-        # keep climbing until local optimal reached
-        while climb:
-            self.checkTotalHittingQueens()
-            current_h = self.h
-            print "CURRENT H: ", self.h
-            # break if solution found
-            if current_h == 0:
-                print "SOLUTION FOUND!"
-                break
-            # calculate h for all
-            self.setAllBoardNodesHeuristic()
-            self.printBoard()
-            # find lowest board
-            lowest = self.findlowestH()
-            if current_h > lowest[0]:
-                # move queen
-                for j in xrange(self.dimensions):
-                    if (self.grid[lowest[1]][j].queen == True):
-                        self.grid[lowest[1]][j].queen = False
-                self.grid[lowest[1]][lowest[2]].queen = True
-                nodes_expanded += 1
+        list_moves.append(copy.deepcopy(self))
+        # run hillclimb with restarts for 10 seconds (if no solution found yet)
+        while time.time() < t_stop and solution_found == False:
+            # climb initial conditions
+            climb = True
+            cost = 0
+            my_nodes_expanded = 1
+            # keep climbing until local optimal reached
+            while climb:
+                self.checkTotalHittingQueens()
+                current_h = self.h
+                # print "CURRENT H: ", self.h
+                # break if solution found
+                if current_h == 0:
+                    # print "SOLUTION FOUND!"
+                    nodes_expanded -= 1
+                    my_nodes_expanded -= 1
+                    break
+                # calculate h for all
+                self.setAllBoardNodesHeuristic()
+                # self.printBoard()
+                # find lowest board
+                lowest = self.findlowestH()
+                if current_h > lowest[0]:
+                    # move queen
+                    for j in xrange(self.dimensions):
+                        if (self.grid[lowest[1]][j].queen == True):
+                            self.grid[lowest[1]][j].queen = False
+                    # print "MOVING QUEEN TO " , lowest[1] , "," ,lowest[2]
+                    self.grid[lowest[1]][lowest[2]].queen = True
+                    nodes_expanded += 1
+                    my_nodes_expanded += 1
+                    cost += lowest[3]
+                    list_moves.append(copy.deepcopy(self))
+                else:
+                    climb = False
+            # check if local or global solution
+            if current_h > 0:
+                # print("LOCAL SOLUTION FOUND\n")
+                list_moves = []
+                result = [current_h, cost, nodes_expanded, solution_found, my_nodes_expanded]
+                list_endboards.append(result)
+                # reset board
+                self.setNewRandomQueens()
+                list_moves.append(copy.deepcopy(self))
             else:
-                climb = False
-        # check if local or global solution
-        if current_h > 0:
-            print("LOCAL SOLUTION FOUND\n")
-            list_endboards.append(0)
+                solution_found = True
+                # print("GLOBAL SOLUTION FOUND\n")
+                # self.printBoard()
+                result = [current_h, cost, nodes_expanded, solution_found, list_moves, my_nodes_expanded]
+                list_endboards.append(result)
 
-            self.printBoard()
-        else:
-            solution_found = True
-            print("GLOBAL SOLUTION FOUND\n")
-            list_endboards.append(0)
-
-            self.printBoard()
-
-        # reset board
-        # self.setNewRandomQueens()
-        print "# nodes expanded = ", nodes_expanded
-    # choose best solution out of restarts
-    # output data
+        t_elapsed = time.time() - t_start
+        # choose best solution out of restarts
+        if len(list_endboards) > 0:
+            best_result = list_endboards[0]
+            for result in list_endboards:
+                if result[0] < best_result[0]:
+                    best_result = result
+                elif result[0] == best_result[0]:
+                    if result[1] < best_result[1]:
+                        best_result = result
+            # output data
+            print "---HILLCLIMBING RESULTS---"
+            print "Solved: ", solution_found
+            print "Elapsed Time: ", t_elapsed, "seconds"
+            print "# Nodes Expanded (total) = ", best_result[2]
+            print "Cost (for best path) = ", best_result[1]
+            if (solution_found):
+                bfactor = str(best_result[2]) + "/" + str(best_result[5])
+                print "Effective Branching factor: ", bfactor
+                print "Path to Solution: \n"
+                self.printHillMoves(best_result[4])
+        # print moves
+        # print "best result: ", best_result
+        # print list_endboards
 
     # finds move with lowest heuristic value given board with h calculated
     def findlowestH(self):
         # go through each node and find lowest value
-        lowest_h = self.h #Why is this lowest_h ? when you wnat the lowest node
+        lowest_h = self.h
+        cost = 0
         low_i = 0
         low_j = 0
-        print "Finding lowest H on board"
+        # print "LOWEST H" , lowest_h
+        # print "Finding lowest H on board"
         for i in xrange(self.dimensions):
             for j in xrange(self.dimensions):
                 if (self.grid[i][j].queen != True):
@@ -88,25 +121,26 @@ class Board:
                         lowest_h = self.grid[i][j].h
                         low_i = i
                         low_j = j
-                        print"lowest H of ",lowest_h," found at [",i,"]","[",j,"]"
+                        cost = self.grid[i][j].g
+                        # print"lowest H of ",lowest_h," found at [",i,"]","[",j,"]"
                     if self.grid[i][j].h == lowest_h:
-                        # come up with random choice
-                        print "equal lowest H of ",lowest_h," found at [",i,"]","[",j,"]"
-                        pass
-        """
-        # CLIMB ONCE
-        self.checkTotalHittingQueens()
-        current_h = self.h
-        if current_h > lowest_h:
-            # move queen
-            for j in xrange(self.dimensions):
-                if (self.grid[low_i][j].queen == True):
-                    self.grid[low_i][j].queen = False
-            self.grid[low_i][low_j].queen = True
-            self.checkTotalHittingQueens()
-        """
+                        # print "equal lowest H of ",lowest_h," found at [",i,"]","[",j,"]"
+                        pass  # just keep first one
 
-        return (lowest_h, low_i, low_j)
+        return (lowest_h, low_i, low_j, cost)
+
+    def printHillMoves(self, moves):
+        for z, move in enumerate(moves):
+            move.checkTotalHittingQueens()
+            h = move.h
+            # Clear values
+            for i in xrange(self.dimensions):
+                for j in xrange(self.dimensions):
+                    if (move.grid[i][j].queen == False):
+                        move.grid[i][j].h = 0
+            # print board
+            print "Move ", z, "--- H = ", h
+            move.printBoard()
 
 
     #Sets the values of all the nodes in the Board to the lowest heuristic (#HittingQueens + #Tiles^2)
@@ -148,6 +182,8 @@ class Board:
 
         #Set the queen Back Position to have a queen
         self.grid[iQ][jQ].queen = True
+        # set heuristic back to this board
+        self.checkTotalHittingQueens()
 
     #Runs A* with Iterative Deepining on initialized board to get the optimal solution (for 10 seconds)
     def aStarPQWithIterativeDeepining(self, startTime, bound):

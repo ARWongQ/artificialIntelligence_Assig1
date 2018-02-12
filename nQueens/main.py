@@ -4,7 +4,7 @@ from Board import Board
 from queenPos import QueenPos
 
 #Prints the stats for A* given the data
-def printStats(movesPath, expandedNodes, successors, totalTime, nValue):
+def printStats(movesPath, expandedNodes, successors, totalTime, nValue, astar):
     #Keep track of the current board and the cost to reach it
     i = 0
     lastBoardCost = 0
@@ -24,7 +24,10 @@ def printStats(movesPath, expandedNodes, successors, totalTime, nValue):
         i += 1
 
 
-    print("It took A* "+ str(totalTime) + " seconds to solve the "+ str(nValue) +"-queens problem")
+    if (astar):
+        print("It took A* "+ str(totalTime) + " seconds to solve the "+ str(nValue) +"-queens problem")
+    else:
+        print("It took A* (iterative deep) " + str(totalTime) + " seconds to solve the " + str(nValue) + "-queens problem")
     print("With Expanded Nodes: " + str(expandedNodes))
     print("With successor per node of " + str(successors))
     print("With an effective branching factor of "+ str(expandedNodes) + "/" + str(len(movesPath) - 1))
@@ -35,26 +38,25 @@ def printStats(movesPath, expandedNodes, successors, totalTime, nValue):
 def main():
     print("Running nQueens")
 
+    # Start the time
+    startTime = time.time()
+
     #Get the n Value and the type of Search for the problem
     nValue = input("N value for the N-queens problem: ")
     searchType = input("Types of Search \n 1 for A* and \n 2 for greedy hill climbing \n 3 for A* with iterative Deepining: ")
 
     #Start the Board
     gameBoard = Board(nValue)
+    # Set Random Queens
+    gameBoard.setRandomQueensTwo()
     print(" ")
+    # Print the first boards
+    print("The starting Board is ---------")
+    gameBoard.printBoard()
 
-
+    astar = False
 
     if searchType == 1:
-        #Set random queens
-        gameBoard.setRandomQueensTwo()
-
-        #Print the first boards
-        print("The starting Board is ---------")
-        gameBoard.printBoard()
-
-        #Start the time
-        startTime = time.time()
 
         #Run A*
         path = gameBoard.aStarPQ(startTime)
@@ -70,20 +72,13 @@ def main():
 
         return
 
-    if searchType == 2:
-        gameBoard.hillclimb()
+    elif searchType == 2:
+        gameBoard.hillclimb(startTime)
         return
 
-    if searchType == 3:
+    elif searchType == 3:
         #Set random queens
-        gameBoard.setRandomQueensTwo()
-
-        #Print the first boards
-        print("The starting Board is ---------")
-        gameBoard.printBoard()
-
-        #Start the time
-        startTime = time.time()
+        astar = True
 
         #Bound
         bound = 0
@@ -115,7 +110,7 @@ def main():
         totalTime = path[3]
 
         #Print the stats for A*
-        printStats(movesPath,expandedNodes,successors,totalTime,nValue)
+        printStats(movesPath,expandedNodes,successors,totalTime,nValue, astar)
 
         return
 
