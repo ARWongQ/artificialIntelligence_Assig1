@@ -18,6 +18,7 @@ A*ID              // press 3.
 
 
 Sample Program:
+
 N value for the N-queens problem: 4
 
 Types of Search 
