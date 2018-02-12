@@ -11,12 +11,15 @@ The program will request the user for an N-value which will create the board to 
 If there is no solution, A* will return that there is no optimal solution (2x2, 3x3).
 
 A*                // press 1.
+
 greedy hill       // press 2.
+
 A*ID              // press 3.
 
 
 Sample Program:
 N value for the N-queens problem: 4
+
 Types of Search 
  1 for A* and 
  2 for greedy hill climbing 
