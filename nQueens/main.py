@@ -48,22 +48,13 @@ def main():
     #Start the Board
     gameBoard = Board(nValue)
     # Set Random Queens
-    #gameBoard.setRandomQueensTwo()
+    gameBoard.setRandomQueensTwo()
     print(" ")
     # Print the first boards
     print("The starting Board is ---------")
     #gameBoard.printBoard()
 
     astar = False
-
-    if searchType == 0:
-        gameBoard.grid[0][0].queen = True
-        gameBoard.grid[1][1].queen = True
-        gameBoard.grid[2][1].queen = True
-        gameBoard.grid[3][1].queen = True
-
-        gameBoard.setAllBoardNodesHeuristic()
-        gameBoard.printBoard()
 
     if searchType == 1:
 
